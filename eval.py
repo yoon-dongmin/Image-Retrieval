@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
+import pretrain
 from torchvision import transforms
 import rnn
 
@@ -294,8 +295,13 @@ elif opt.mode == 'robot': #robot demo
         #will select the object with the embedding most similar to its output
         sort = sorted(sims, reverse=True)
         t1, t2, t3, t4, t5 = sims.index(sort[0]), sims.index(sort[1]), sims.index(sort[2]), sims.index(sort[3]), sims.index(sort[4])
-        top1, top2, top3, top4, top5 = embeddings[t1][0], embeddings[t2][0], embeddings[t3][0], embeddings[t4][0], embeddings[t5][0]
-        print(top1,',', top2,',', top3,',', top4,',', top5)
+        candidates = [embeddings[t1][0], embeddings[t2][0], embeddings[t3][0], embeddings[t4][0], embeddings[t5][0]]
+        for i in candidates:
+            pretrain.classify(i)
+            text1 = input()
+            if text1 == "yes":
+                break
+        #print(top1,',', top2,',', top3,',', top4,',', top5)
 
 
 else: # evaluation on held-out test set
